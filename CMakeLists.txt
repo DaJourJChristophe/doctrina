@@ -15,7 +15,7 @@ set(CMAKE_CXX_FLAGS "-std=c++20 -march=native -Wall -Wextra -Werror")
 set(CMAKE_CXX_FLAGS_DEBUG "-fsanitize=address -fno-omit-frame-pointer -O3 -ggdb3")
 set(CMAKE_CXX_FLAGS_RELEASE "-s -O3")
 
-project(graphics VERSION 1.0.0 LANGUAGES C CXX)
+project(doctrina VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_BINARY_DIR "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_BUILD_DIR "${PROJECT_SOURCE_DIR}/build")
