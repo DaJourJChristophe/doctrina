@@ -1,0 +1,10 @@
+*.a
+*.dll
+*.o
+*.out
+*.so
+
+.vscode/
+
+bin/*
+!bin/.keep
