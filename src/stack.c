@@ -113,6 +113,10 @@ int main(void)
   assert(0 == stack_push(stack, &(uint32_t){7U}, sizeof(uint32_t)));
   assert((3 * sizeof(uint32_t)) == stack->top);
   assert(7U == *(uint32_t *)(stack->data + (2 * sizeof(uint32_t))));
+  const uint64_t old_top = stack->top;
+  stack->top = 16UL;
+  assert(0 > stack_push(stack, &(uint32_t){9U}, sizeof(uint32_t)));
+  stack->top = old_top;
   void *data = NULL;
   assert(stack->top == (3 * sizeof(uint32_t)));
   data = stack_peek(stack, sizeof(uint32_t));
