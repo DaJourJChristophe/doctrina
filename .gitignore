@@ -3,8 +3,11 @@
 *.o
 *.out
 *.so
+*.so.*
+*.swp
 
 .vscode/
+build/
 
 bin/*
 !bin/.keep
