@@ -56,6 +56,11 @@ add_test(
 )
 
 add_test(
+  NAME test_set
+  COMMAND $<TARGET_FILE:test_set>
+)
+
+add_test(
   NAME test_stack
   COMMAND $<TARGET_FILE:test_stack>
 )

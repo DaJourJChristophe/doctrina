@@ -20,6 +20,33 @@
 extern "C" {
 #endif/*__cplusplus*/
 
+#include "internal/hash.h"
+
+#include <stddef.h>
+#include <stdint.h>
+
+typedef struct bucket bucket_t;
+
+struct set
+{
+  bucket_t **buckets;
+    size_t   size;
+};
+
+typedef struct set set_t;
+
+set_t *set_new(const size_t size);
+
+void set_destroy(set_t *self);
+
+void *set_getall(set_t *self, size_t *overall_size);
+
+int set_exists(set_t *self, const void *key, const size_t keylen);
+
+int set_add(set_t *self, const void *key, const size_t keylen);
+
+int set_remove(set_t *self, const void *key, const size_t keylen);
+
 #ifdef __cplusplus
 }
 #endif/*__cplusplus*/

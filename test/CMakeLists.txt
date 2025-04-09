@@ -22,6 +22,14 @@ target_link_libraries(test_map PRIVATE asan)
 target_link_libraries(test_map PRIVATE cmocka)
 target_link_libraries(test_map PRIVATE doctrina)
 
+add_executable(test_set
+  "${CMAKE_CURRENT_SOURCE_DIR}/test_set.c"
+)
+
+target_link_libraries(test_set PRIVATE asan)
+target_link_libraries(test_set PRIVATE cmocka)
+target_link_libraries(test_set PRIVATE doctrina)
+
 add_executable(test_stack
   "${CMAKE_CURRENT_SOURCE_DIR}/test_stack.c"
 )
