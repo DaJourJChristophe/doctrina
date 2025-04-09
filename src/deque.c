@@ -65,7 +65,7 @@ ring_buffer_t *ring_buffer_create(const size_t cap)
   const size_t memory = offsetof(ring_buffer_t, data[cap]);
   ring_buffer_t *self = NULL;
 
-  self = (ring_buffer_t *)calloc(memory, sizeof(*self->data));
+  self = (ring_buffer_t *)calloc(memory, sizeof(uint8_t));
   if (self == NULL)
   {
     fprintf(stderr, "%s(): %s\n", __func__, "Could not allocate ring buffer to the heap");

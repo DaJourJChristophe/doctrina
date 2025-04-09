@@ -26,7 +26,7 @@ stack_t *stack_create(const size_t cap)
   const size_t memory = offsetof(stack_t, data[cap]);
   stack_t *self = NULL;
 
-  self = (stack_t *)malloc(memory);
+  self = (stack_t *)calloc(memory, sizeof(uint8_t));
   if (self == NULL)
   {
     fprintf(stderr, "%s(): %s\n", __func__, "Could not allocate stack to the heap");

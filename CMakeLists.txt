@@ -37,3 +37,20 @@ include(ClangFormat)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/src")
 add_subdirectory("${PROJECT_SOURCE_DIR}/test")
+
+enable_testing()
+
+add_test(
+  NAME test_deque
+  COMMAND $<TARGET_FILE:test_deque>
+)
+
+add_test(
+  NAME test_stack
+  COMMAND $<TARGET_FILE:test_stack>
+)
+
+add_test(
+  NAME test_trie
+  COMMAND $<TARGET_FILE:test_trie>
+)

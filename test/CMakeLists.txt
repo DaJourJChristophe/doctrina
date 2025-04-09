@@ -6,6 +6,14 @@ target_link_libraries(test_deque PRIVATE asan)
 target_link_libraries(test_deque PRIVATE cmocka)
 target_link_libraries(test_deque PRIVATE doctrina)
 
+add_executable(test_stack
+  "${CMAKE_CURRENT_SOURCE_DIR}/test_stack.c"
+)
+
+target_link_libraries(test_stack PRIVATE asan)
+target_link_libraries(test_stack PRIVATE cmocka)
+target_link_libraries(test_stack PRIVATE doctrina)
+
 add_executable(test_trie
   "${CMAKE_CURRENT_SOURCE_DIR}/test_trie.c"
 )
