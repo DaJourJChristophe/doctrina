@@ -20,6 +20,27 @@
 extern "C" {
 #endif/*__cplusplus*/
 
+#include "map.h"
+
+#include <stddef.h>
+
+typedef struct graph_node graph_node_t;
+
+struct graph
+{
+  map_t *nodes;
+};
+
+typedef struct graph graph_t;
+
+graph_t *graph_create(const size_t max_nodes);
+
+void graph_destroy(graph_t *self);
+
+static graph_node_t *graph_add_node(graph_t *self, const void *data, const size_t size);
+
+void graph_add_edge(graph_t *self, const void *a, const size_t as, const void *b, const size_t bs);
+
 #ifdef __cplusplus
 }
 #endif/*__cplusplus*/
