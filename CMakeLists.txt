@@ -46,6 +46,11 @@ add_test(
 )
 
 add_test(
+  NAME test_map
+  COMMAND $<TARGET_FILE:test_map>
+)
+
+add_test(
   NAME test_stack
   COMMAND $<TARGET_FILE:test_stack>
 )

@@ -20,6 +20,34 @@
 extern "C" {
 #endif/*__cplusplus*/
 
+#include "internal/hash.h"
+
+#include <stddef.h>
+#include <stdint.h>
+
+typedef struct bucket bucket_t;
+
+struct map
+{
+  bucket_t **buckets;
+    size_t   size;
+};
+
+typedef struct map map_t;
+
+map_t *map_new(const size_t size);
+
+void map_destroy(map_t *self);
+
+void *map_get(map_t *self, const void *key, const size_t keylen, size_t *size);
+
+int map_exists(map_t *self, const void *key, const size_t keylen);
+
+int map_set(map_t *self, const void *key,  const size_t keylen,
+                         const void *data, const size_t datalen);
+
+int map_del(map_t *self, const void *key, const size_t keylen);
+
 #ifdef __cplusplus
 }
 #endif/*__cplusplus*/
