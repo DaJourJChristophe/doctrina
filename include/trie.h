@@ -20,6 +20,19 @@
 extern "C" {
 #endif/*__cplusplus*/
 
+#include <stdbool.h>
+#include <stdint.h>
+
+typedef struct trie trie_t;
+
+trie_t *trie_new(void);
+
+void trie_destroy(trie_t *self);
+
+void trie_insert(trie_t *self, const uint8_t *key);
+
+bool trie_search(trie_t *self, const uint8_t *key);
+
 #ifdef __cplusplus
 }
 #endif/*__cplusplus*/
