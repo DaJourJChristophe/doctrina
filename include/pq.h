@@ -20,6 +20,24 @@
 extern "C" {
 #endif/*__cplusplus*/
 
+#include "heap.h"
+
+typedef int (*pq_compare_t)(const void *a, const void *b);
+
+typedef struct priority_queue priority_queue_t;
+
+priority_queue_t *pq_new(pq_compare_t cmp);
+
+void pq_destroy(priority_queue_t *pq);
+
+int pq_push(priority_queue_t *pq, const void *data);
+
+void *pq_peek(priority_queue_t *pq);
+
+void *pq_pop(priority_queue_t *pq);
+
+priority_queue_t *pq_merge(priority_queue_t *pq1, priority_queue_t *pq2);
+
 #ifdef __cplusplus
 }
 #endif/*__cplusplus*/
