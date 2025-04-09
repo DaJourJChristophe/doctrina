@@ -46,6 +46,11 @@ add_test(
 )
 
 add_test(
+  NAME test_heap
+  COMMAND $<TARGET_FILE:test_heap>
+)
+
+add_test(
   NAME test_map
   COMMAND $<TARGET_FILE:test_map>
 )
