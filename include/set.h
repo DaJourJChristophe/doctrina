@@ -39,6 +39,8 @@ set_t *set_new(const size_t size);
 
 void set_destroy(set_t *self);
 
+void *set_get(set_t *self, const void *key, const size_t keylen, size_t *size);
+
 void *set_getall(set_t *self, size_t *overall_size);
 
 int set_exists(set_t *self, const void *key, const size_t keylen);

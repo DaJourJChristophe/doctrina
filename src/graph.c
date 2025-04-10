@@ -15,8 +15,11 @@
  */
 #include "graph.h"
 #include "map.h"
+#include "deque.h"
 #include "set.h"
+#include "stack.h"
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -84,25 +87,19 @@ void graph_node_destroy(graph_node_t *self)
 {
   if (self != NULL)
   {
+    graph_edge_t **edges = NULL;
     graph_edge_t *edge = NULL;
-    void *tmp = NULL;
-    size_t size = 0UL;
+    size_t num_edges = 0UL;
 
-    for (uint64_t i = 0UL; i < self->edges->size; i++)
+    edges = set_getall(self->edges, &num_edges);
+    if (edges == NULL)
     {
-      if (self->edges->buckets[i] == NULL)
-      {
-        continue;
-      }
+      return;
+    }
 
-      tmp = set_bucket_key(self->edges->buckets[i], &size);
-      if (tmp == NULL)
-      {
-        continue;
-      }
-
-      edge = *(graph_edge_t **)tmp;
-      free(tmp);
+    for (uint64_t i = 0UL; i < num_edges; i++)
+    {
+      edge = edges[i];
 
       if (edge == NULL)
       {
@@ -149,32 +146,32 @@ void graph_destroy(graph_t *self)
 {
   if (self != NULL)
   {
-    graph_node_t *node = NULL;
-    void *tmp = NULL;
+    // graph_node_t *node = NULL;
+    // void *tmp = NULL;
 
-    for (uint64_t i = 0UL; i < self->nodes->size; i++)
-    {
-      if (self->nodes->buckets[i] == NULL)
-      {
-        continue;
-      }
+    // for (uint64_t i = 0UL; i < self->nodes->size; i++)
+    // {
+    //   if (self->nodes->buckets[i] == NULL)
+    //   {
+    //     continue;
+    //   }
 
-      tmp = bucket_data(self->nodes->buckets[i]);
-      if (tmp == NULL)
-      {
-        continue;
-      }
+    //   tmp = bucket_data(self->nodes->buckets[i]);
+    //   if (tmp == NULL)
+    //   {
+    //     continue;
+    //   }
 
-      node = *(graph_node_t **)tmp;
-      free(tmp);
+    //   node = *(graph_node_t **)tmp;
+    //   free(tmp);
 
-      if (node == NULL)
-      {
-        continue;
-      }
+    //   if (node == NULL)
+    //   {
+    //     continue;
+    //   }
 
-      graph_node_destroy(node);
-    }
+    //   graph_node_destroy(node);
+    // }
 
     map_destroy(self->nodes);
     self->nodes = NULL;
@@ -182,6 +179,176 @@ void graph_destroy(graph_t *self)
     free(self);
     self = NULL;
   }
+}
+
+void graph_bfs(graph_t *self, const void *start_data, const size_t size)
+{
+  graph_node_t *node = NULL;
+
+  node = map_get(self->nodes, start_data, size, NULL);
+  if (node == NULL)
+  {
+    fprintf(stderr, "%s(): %s\n", __func__, "The start node does not exist in the graph");
+    exit(EXIT_FAILURE);
+  }
+
+  set_t *visited = NULL;
+  ring_buffer_t *queue = NULL;
+
+  visited = set_new(32UL);
+  queue = ring_buffer_create(32UL);
+
+  if (0 > ring_buffer_enqueue(queue, &node, sizeof(node)))
+  {
+    fprintf(stderr, "%s(): %s\n", __func__, "Could not enqueue start node into node queue");
+    exit(EXIT_FAILURE);
+  }
+
+  uintptr_t *addr = NULL;
+  graph_edge_t **edges = NULL;
+  graph_edge_t *edge = NULL;
+  graph_node_t *dest = NULL;
+  size_t num_edges = 0UL;
+  uint64_t i;
+
+  while (true)
+  {
+    addr = ring_buffer_dequeue(queue, sizeof(node));
+    if (addr == NULL)
+    {
+      break;
+    }
+
+    node = *(graph_node_t **)addr;
+    if (node == NULL)
+    {
+      break;
+    }
+
+    if (1 == set_exists(visited, &node, sizeof(node)))
+    {
+      continue;
+    }
+
+    num_edges = 0UL;
+    edges = set_getall(node->edges, &num_edges);
+    if (edges == NULL)
+    {
+      fprintf(stderr, "%s(): %s\n", __func__, "Could not get an edge list from node");
+      exit(EXIT_FAILURE);
+    }
+
+    for (i = 0UL; i < num_edges; i++)
+    {
+      edge = edges[i];
+
+      if (edge == NULL)
+      {
+        continue;
+      }
+
+      dest = edge->dest;
+
+      if (1 == set_exists(visited, &dest, sizeof(dest)))
+      {
+        continue;
+      }
+
+      if (0 > ring_buffer_enqueue(queue, &dest, sizeof(dest)))
+      {
+        fprintf(stderr, "%s(): %s\n", __func__, "Could not enqueue destination node into node queue");
+        exit(EXIT_FAILURE);
+      }
+    }
+  }
+
+  ring_buffer_destroy(queue);
+  set_destroy(visited);
+}
+
+void graph_dfs(graph_t *self, const void *start_data, const size_t size)
+{
+  graph_node_t *node = NULL;
+
+  node = map_get(self->nodes, start_data, size, NULL);
+  if (node == NULL)
+  {
+    fprintf(stderr, "%s(): %s\n", __func__, "The start node does not exist in the graph");
+    exit(EXIT_FAILURE);
+  }
+
+  set_t *visited = NULL;
+  stack_t *stack = NULL;
+
+  visited = set_new(32UL);
+  stack = stack_create(32UL);
+
+  if (0 > stack_push(stack, &node, sizeof(node)))
+  {
+    fprintf(stderr, "%s(): %s\n", __func__, "Could not push start node onto node stack");
+    exit(EXIT_FAILURE);
+  }
+
+  uintptr_t *addr = NULL;
+  graph_edge_t **edges = NULL;
+  graph_edge_t *edge = NULL;
+  graph_node_t *dest = NULL;
+  size_t num_edges = 0UL;
+  uint64_t i;
+
+  while (true)
+  {
+    addr = stack_pop(stack, sizeof(node));
+    if (addr == NULL)
+    {
+      break;
+    }
+
+    node = *(graph_node_t **)addr;
+    if (node == NULL)
+    {
+      break;
+    }
+
+    if (1 == set_exists(visited, &node, sizeof(node)))
+    {
+      continue;
+    }
+
+    num_edges = 0UL;
+    edges = set_getall(node->edges, &num_edges);
+    if (edges == NULL)
+    {
+      fprintf(stderr, "%s(): %s\n", __func__, "Could not get an edge list from node");
+      exit(EXIT_FAILURE);
+    }
+
+    for (i = 0UL; i < num_edges; i++)
+    {
+      edge = edges[i];
+
+      if (edge == NULL)
+      {
+        continue;
+      }
+
+      dest = edge->dest;
+
+      if (1 == set_exists(visited, &dest, sizeof(dest)))
+      {
+        continue;
+      }
+
+      if (0 > stack_push(stack, &dest, sizeof(dest)))
+      {
+        fprintf(stderr, "%s(): %s\n", __func__, "Could not push destination node onto node stack");
+        exit(EXIT_FAILURE);
+      }
+    }
+  }
+
+  stack_destroy(stack);
+  set_destroy(visited);
 }
 
 static graph_node_t *graph_add_node(graph_t *self, const void *data, const size_t size)
@@ -217,13 +384,3 @@ void graph_add_edge(graph_t *self, const void *a, const size_t as, const void *b
   graph_node_t *src = graph_add_node(self, a, as);
   graph_node_add_edge(src, edge);
 }
-
-// int main(void)
-// {
-//   graph_t *g = NULL;
-//   g = graph_create(16);
-//   graph_add_edge(g, &(uint32_t){5}, sizeof(uint32_t), &(uint32_t){6}, sizeof(uint32_t));
-//   graph_add_edge(g, &(uint32_t){5}, sizeof(uint32_t), &(uint32_t){7}, sizeof(uint32_t));
-//   graph_destroy(g);
-//   return 0;
-// }

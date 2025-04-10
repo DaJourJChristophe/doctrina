@@ -224,7 +224,11 @@ void *map_get(map_t *self, const void *key, const size_t keylen, size_t *size)
       continue;
     }
 
-    *size = bucket_size(self->buckets[j]);
+    if (size != NULL)
+    {
+      *size = bucket_size(self->buckets[j]);
+    }
+
     return bucket_data(self->buckets[j]);
   }
 

@@ -159,6 +159,32 @@ void set_destroy(set_t *self)
 
 #define SEED 2
 
+void *set_get(set_t *self, const void *key, const size_t keylen, size_t *size)
+{
+  const uint64_t key_hashed = __hash__(key, keylen, SEED);
+  uint64_t i;
+  uint64_t j;
+
+  for (i = 0UL; i < self->size; i++)
+  {
+    j = (key_hashed + i) % self->size;
+
+    if (self->buckets[j] == NULL)
+    {
+      return NULL;
+    }
+
+    if (0 == bucket_haskey(self->buckets[j], key, keylen))
+    {
+      continue;
+    }
+
+    return bucket_key(self->buckets[j], size);
+  }
+
+  return NULL;
+}
+
 void *set_getall(set_t *self, size_t *overall_size)
 {
   void *data = NULL;

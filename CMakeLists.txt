@@ -46,6 +46,11 @@ add_test(
 )
 
 add_test(
+  NAME test_graph
+  COMMAND $<TARGET_FILE:test_graph>
+)
+
+add_test(
   NAME test_heap
   COMMAND $<TARGET_FILE:test_heap>
 )
